@@ -7,6 +7,7 @@ pgvector
 sentence-transformers
 pypdf
 tiktoken
+groq
 pydantic
 python-dotenv
 alembic

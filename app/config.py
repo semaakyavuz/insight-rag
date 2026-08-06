@@ -12,3 +12,9 @@ EMBEDDING_MODEL_NAME = os.getenv(
 # so chunks aren't silently truncated at embed time.
 CHUNK_SIZE_TOKENS = int(os.getenv("CHUNK_SIZE_TOKENS", "100"))
 CHUNK_OVERLAP_TOKENS = int(os.getenv("CHUNK_OVERLAP_TOKENS", "20"))
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+
+# llama-3.1-8b-instant was deprecated on Groq's free/developer tier
+# (2026-06-17); gpt-oss-20b is Groq's recommended replacement.
+GROQ_MODEL_NAME = os.getenv("GROQ_MODEL_NAME", "openai/gpt-oss-20b")

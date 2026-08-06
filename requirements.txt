@@ -1,9 +1,12 @@
 fastapi
 uvicorn
+python-multipart
 sqlalchemy
 psycopg2-binary
 pgvector
 sentence-transformers
+pypdf
+tiktoken
 pydantic
 python-dotenv
 alembic

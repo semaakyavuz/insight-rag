@@ -2,8 +2,7 @@ import re
 
 import tiktoken
 
-CHUNK_SIZE_TOKENS = 500
-CHUNK_OVERLAP_TOKENS = 50
+from app.config import CHUNK_OVERLAP_TOKENS, CHUNK_SIZE_TOKENS
 
 _ENCODING = tiktoken.get_encoding("cl100k_base")
 _SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")

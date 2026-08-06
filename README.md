@@ -39,7 +39,7 @@ docker run -p 8000:8000 insight-rag
    docker-compose up -d
    ```
 
-   Bu, `pgvector/pgvector:pg16` imajıyla `5432` portunda bir Postgres servisi başlatır ve verileri `postgres_data` volume'ünde kalıcı tutar.
+   Bu, `pgvector/pgvector:pg16` imajıyla host makinede `5433` portunda (container içi `5432`) bir Postgres servisi başlatır ve verileri `postgres_data` volume'ünde kalıcı tutar. `5433`, bu makinedeki başka bir projenin (STOCKBRIDGE) `5432`'yi kullanmasıyla çakışmamak için seçildi.
 
 3. Bağımlılıkları kur ve migration'ları uygula:
 

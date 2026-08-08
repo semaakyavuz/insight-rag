@@ -4,11 +4,17 @@
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(pip install *)",
-      "Bash(python -m alembic *)",
-      "Bash(python -m pytest *)",
-      "Bash(python -m uvicorn *)",
       "Bash(alembic *)",
-      "Bash(python -c \"import sys; sys.path.insert\\(0,'.'\\); from app.database import Base, DATABASE_URL; print\\('OK', DATABASE_URL\\)\")"
+      "Bash(python *)",
+      "Bash(docker *)",
+      "Bash(docker-compose *)",
+      "Bash(curl *)",
+      "Bash(taskkill *)",
+      "Bash(netstat *)",
+      "Bash(break)",
+      "WebSearch",
+      "WebFetch",
+      "Bash(python -c \"import groq; print\\(groq.__version__\\)\")"
     ]
   },
   "hooks": {

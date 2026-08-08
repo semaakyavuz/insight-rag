@@ -28,3 +28,6 @@ Thumbs.db
 
 # Graphify
 graphify-out/
+
+test.txt
+query.json

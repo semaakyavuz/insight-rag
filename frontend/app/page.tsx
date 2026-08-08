@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { FileText, X } from "lucide-react";
 import { AnimatedGradient } from "@/components/ui/animated-gradient";
 import { Component as AiLoader } from "@/components/ui/ai-loader";
 import { MetalButton } from "@/components/ui/metal-button";
@@ -11,6 +12,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+interface UploadedFile {
+  id: number;
+  name: string;
+  status: "uploading" | "done";
+}
+
 interface AnsweredQuestion {
   id: number;
   question: string;
@@ -18,10 +25,9 @@ interface AnsweredQuestion {
 }
 
 export default function Home() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadStatus, setUploadStatus] = useState<
-    "idle" | "uploading" | "done"
-  >("idle");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 
   const [question, setQuestion] = useState("");
   const [isAsking, setIsAsking] = useState(false);
@@ -32,16 +38,31 @@ export default function Home() {
   };
 
   const handleFileChange = (e: { target: { files: FileList | null } }) => {
-    setSelectedFile(e.target.files?.[0] ?? null);
-    setUploadStatus("idle");
+    setPendingFile(e.target.files?.[0] ?? null);
   };
 
   const handleUpload = () => {
-    if (!selectedFile || uploadStatus === "uploading") return;
-    setUploadStatus("uploading");
+    if (!pendingFile) return;
+
+    const id = Date.now();
+    setUploadedFiles((prev) => [
+      ...prev,
+      { id, name: pendingFile.name, status: "uploading" },
+    ]);
+    setPendingFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+
     setTimeout(() => {
-      setUploadStatus("done");
+      setUploadedFiles((prev) =>
+        prev.map((file) =>
+          file.id === id ? { ...file, status: "done" } : file
+        )
+      );
     }, 1500);
+  };
+
+  const handleRemoveFile = (id: number) => {
+    setUploadedFiles((prev) => prev.filter((file) => file.id !== id));
   };
 
   const handleAsk = () => {
@@ -97,6 +118,7 @@ export default function Home() {
           <CardContent className="flex flex-col gap-4">
             <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
               <input
+                ref={fileInputRef}
                 type="file"
                 accept=".pdf,.txt"
                 onChange={handleFileChange}
@@ -105,20 +127,39 @@ export default function Home() {
               <MetalButton
                 variant="default"
                 onClick={handleUpload}
-                disabled={!selectedFile || uploadStatus === "uploading"}
+                disabled={!pendingFile}
               >
                 Yükle
               </MetalButton>
             </div>
-            {selectedFile && (
-              <p className="text-sm text-muted-foreground">
-                {selectedFile.name} —{" "}
-                {uploadStatus === "uploading"
-                  ? "yükleniyor..."
-                  : uploadStatus === "done"
-                    ? "tamamlandı"
-                    : "hazır"}
-              </p>
+
+            {uploadedFiles.length > 0 && (
+              <ul className="flex flex-col gap-2">
+                {uploadedFiles.map((file) => (
+                  <li
+                    key={file.id}
+                    className="flex items-center justify-between gap-3 rounded-md border border-border bg-muted/40 px-3 py-2 text-sm"
+                  >
+                    <span className="flex min-w-0 items-center gap-2">
+                      <FileText className="size-4 shrink-0 text-muted-foreground" />
+                      <span className="truncate">{file.name}</span>
+                      <span className="shrink-0 text-xs text-muted-foreground">
+                        {file.status === "uploading"
+                          ? "yükleniyor..."
+                          : "tamamlandı"}
+                      </span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveFile(file.id)}
+                      aria-label={`${file.name} dosyasını kaldır`}
+                      className="shrink-0 rounded-sm p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                    >
+                      <X className="size-4" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
             )}
           </CardContent>
         </Card>

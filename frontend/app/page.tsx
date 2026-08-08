@@ -12,18 +12,21 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { askQuestion, uploadDocument } from "@/lib/api";
 
 interface UploadedFile {
   id: number;
   name: string;
-  status: "uploading" | "done";
+  status: "uploading" | "done" | "error";
+  documentId?: string;
+  errorMessage?: string;
 }
 
 interface AnsweredQuestion {
   id: number;
   question: string;
   answer: string;
-  sources: string[];
+  sources: { label: string }[];
 }
 
 export default function Home() {
@@ -43,53 +46,81 @@ export default function Home() {
     setPendingFile(e.target.files?.[0] ?? null);
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!pendingFile) return;
 
+    const file = pendingFile;
     const id = Date.now();
+
     setUploadedFiles((prev) => [
       ...prev,
-      { id, name: pendingFile.name, status: "uploading" },
+      { id, name: file.name, status: "uploading" },
     ]);
     setPendingFile(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
 
-    setTimeout(() => {
+    try {
+      const result = await uploadDocument(file);
       setUploadedFiles((prev) =>
-        prev.map((file) =>
-          file.id === id ? { ...file, status: "done" } : file
+        prev.map((f) =>
+          f.id === id ? { ...f, status: "done", documentId: result.id } : f
         )
       );
-    }, 1500);
+    } catch (err) {
+      setUploadedFiles((prev) =>
+        prev.map((f) =>
+          f.id === id
+            ? {
+                ...f,
+                status: "error",
+                errorMessage:
+                  err instanceof Error ? err.message : "Yükleme başarısız oldu",
+              }
+            : f
+        )
+      );
+    }
   };
 
   const handleRemoveFile = (id: number) => {
     setUploadedFiles((prev) => prev.filter((file) => file.id !== id));
   };
 
-  const handleAsk = () => {
+  const handleAsk = async () => {
     const trimmed = question.trim();
     if (!trimmed || isAsking) return;
 
     setIsAsking(true);
     setQuestion("");
 
-    setTimeout(() => {
-      const fakeSourceDoc =
-        uploadedFiles[uploadedFiles.length - 1]?.name ?? "ornek-belge.pdf";
-
+    try {
+      const result = await askQuestion(trimmed);
       setAnswers((prev) => [
         {
           id: Date.now(),
           question: trimmed,
-          answer:
-            "Bu bir örnek cevaptır. Backend bağlantısı henüz aktif değil.",
-          sources: [fakeSourceDoc, "chunk #3"],
+          answer: result.answer,
+          sources: result.sources.map((source) => ({
+            label: `${source.chunk_text.slice(0, 60)}${
+              source.chunk_text.length > 60 ? "…" : ""
+            } — ${source.document_filename}`,
+          })),
         },
         ...prev,
       ]);
+    } catch {
+      setAnswers((prev) => [
+        {
+          id: Date.now(),
+          question: trimmed,
+          answer: "Şu an cevap üretemiyorum, lütfen tekrar deneyin.",
+          sources: [],
+        },
+        ...prev,
+      ]);
+    } finally {
       setIsAsking(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -127,25 +158,41 @@ export default function Home() {
                 {uploadedFiles.map((file) => (
                   <li
                     key={file.id}
-                    className="flex items-center justify-between gap-3 rounded-md border border-border bg-muted/40 px-3 py-2 text-sm"
+                    className="flex flex-col gap-1 rounded-md border border-border bg-muted/40 px-3 py-2 text-sm"
                   >
-                    <span className="flex min-w-0 items-center gap-2">
-                      <FileText className="size-4 shrink-0 text-muted-foreground" />
-                      <span className="truncate">{file.name}</span>
-                      <span className="shrink-0 text-xs text-muted-foreground">
-                        {file.status === "uploading"
-                          ? "yükleniyor..."
-                          : "tamamlandı"}
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="flex min-w-0 items-center gap-2">
+                        <FileText className="size-4 shrink-0 text-muted-foreground" />
+                        <span className="truncate">{file.name}</span>
+                        <span
+                          className={cn(
+                            "shrink-0 text-xs",
+                            file.status === "error"
+                              ? "text-destructive"
+                              : "text-muted-foreground"
+                          )}
+                        >
+                          {file.status === "uploading"
+                            ? "yükleniyor..."
+                            : file.status === "error"
+                              ? "hata"
+                              : "tamamlandı"}
+                        </span>
                       </span>
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveFile(file.id)}
-                      aria-label={`${file.name} dosyasını kaldır`}
-                      className="shrink-0 rounded-sm p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-                    >
-                      <X className="size-4" />
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFile(file.id)}
+                        aria-label={`${file.name} dosyasını kaldır`}
+                        className="shrink-0 rounded-sm p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                      >
+                        <X className="size-4" />
+                      </button>
+                    </div>
+                    {file.status === "error" && file.errorMessage && (
+                      <p className="pl-6 text-xs text-destructive">
+                        {file.errorMessage}
+                      </p>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -200,11 +247,9 @@ export default function Home() {
                       {item.sources.map((source, index) => (
                         <span
                           key={index}
-                          className={cn(
-                            "rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground"
-                          )}
+                          className="rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground"
                         >
-                          {source}
+                          {source.label}
                         </span>
                       ))}
                     </div>

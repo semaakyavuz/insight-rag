@@ -10,7 +10,7 @@ from alembic import context
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app.database import Base, DATABASE_URL  # noqa: E402
-from app.models import Document, DocumentChunk  # noqa: E402,F401
+from app.models import Conversation, Document, DocumentChunk, Message  # noqa: E402,F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

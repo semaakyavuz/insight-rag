@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface UploadedFile {
   id: number;
@@ -22,6 +23,7 @@ interface AnsweredQuestion {
   id: number;
   question: string;
   answer: string;
+  sources: string[];
 }
 
 export default function Home() {
@@ -73,12 +75,16 @@ export default function Home() {
     setQuestion("");
 
     setTimeout(() => {
+      const fakeSourceDoc =
+        uploadedFiles[uploadedFiles.length - 1]?.name ?? "ornek-belge.pdf";
+
       setAnswers((prev) => [
         {
           id: Date.now(),
           question: trimmed,
           answer:
             "Bu bir örnek cevaptır. Backend bağlantısı henüz aktif değil.",
+          sources: [fakeSourceDoc, "chunk #3"],
         },
         ...prev,
       ]);
@@ -197,16 +203,29 @@ export default function Home() {
 
             <div className="flex flex-col gap-4">
               {answers.map((item) => (
-                <div
-                  key={item.id}
-                  className="rounded-lg border border-border bg-card p-4"
-                >
-                  <p className="text-sm font-medium text-foreground">
-                    {item.question}
-                  </p>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    {item.answer}
-                  </p>
+                <div key={item.id} className="flex flex-col gap-2">
+                  <div className="flex justify-end">
+                    <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-primary px-4 py-2 text-sm text-primary-foreground">
+                      {item.question}
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-start gap-2">
+                    <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-muted px-4 py-2 text-sm text-foreground">
+                      {item.answer}
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 pl-1">
+                      {item.sources.map((source, index) => (
+                        <span
+                          key={index}
+                          className={cn(
+                            "rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground"
+                          )}
+                        >
+                          {source}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

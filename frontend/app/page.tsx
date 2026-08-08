@@ -4,6 +4,12 @@ import { useState } from "react";
 import { AnimatedGradient } from "@/components/ui/animated-gradient";
 import { Component as AiLoader } from "@/components/ui/ai-loader";
 import { MetalButton } from "@/components/ui/metal-button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface AnsweredQuestion {
   id: number;
@@ -64,7 +70,7 @@ export default function Home() {
       <section className="relative flex h-[60vh] min-h-95 w-full items-center justify-center overflow-hidden sm:h-[70vh]">
         <AnimatedGradient config={{ preset: "Aurora" }} />
         <div className="relative z-10 flex flex-col items-center gap-3 px-6 text-center sm:gap-6">
-          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
+          <h1 className="font-heading text-4xl font-bold tracking-tight text-white sm:text-6xl">
             InsightRAG
           </h1>
           <p className="max-w-md text-sm text-white/80 sm:text-lg">
@@ -80,81 +86,92 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="upload" className="mx-auto w-full max-w-2xl px-6 py-16 sm:py-24">
-        <h2 className="mb-6 text-xl font-semibold sm:text-2xl">
-          Doküman Yükle
-        </h2>
-        <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4">
-          <input
-            type="file"
-            accept=".pdf,.txt"
-            onChange={handleFileChange}
-            className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm file:mr-3 file:rounded file:border-0 file:bg-secondary file:px-3 file:py-1.5 file:text-sm file:text-secondary-foreground"
-          />
-          <MetalButton
-            variant="default"
-            onClick={handleUpload}
-            disabled={!selectedFile || uploadStatus === "uploading"}
-          >
-            Yükle
-          </MetalButton>
-        </div>
-        {selectedFile && (
-          <p className="mt-3 text-sm text-muted-foreground">
-            {selectedFile.name} —{" "}
-            {uploadStatus === "uploading"
-              ? "yükleniyor..."
-              : uploadStatus === "done"
-                ? "tamamlandı"
-                : "hazır"}
-          </p>
-        )}
-      </section>
-
-      <section className="mx-auto w-full max-w-2xl px-6 pb-16 sm:pb-24">
-        <h2 className="mb-6 text-xl font-semibold sm:text-2xl">Soru Sor</h2>
-        <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4">
-          <input
-            type="text"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleAsk();
-            }}
-            placeholder="Dokümanlarınla ilgili bir soru sor..."
-            className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm"
-          />
-          <MetalButton
-            variant="success"
-            onClick={handleAsk}
-            disabled={isAsking || !question.trim()}
-          >
-            Sor
-          </MetalButton>
-        </div>
-
-        {isAsking && (
-          <div className="mt-8 flex justify-center">
-            <AiLoader />
-          </div>
-        )}
-
-        <div className="mt-8 flex flex-col gap-4">
-          {answers.map((item) => (
-            <div
-              key={item.id}
-              className="rounded-lg border border-border bg-card p-4"
-            >
-              <p className="text-sm font-medium text-foreground">
-                {item.question}
-              </p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {item.answer}
-              </p>
+      <div
+        id="upload"
+        className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 px-6 py-16 md:grid-cols-2 sm:py-24"
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-bold">Doküman Yükle</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+              <input
+                type="file"
+                accept=".pdf,.txt"
+                onChange={handleFileChange}
+                className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm file:mr-3 file:rounded file:border-0 file:bg-secondary file:px-3 file:py-1.5 file:text-sm file:text-secondary-foreground"
+              />
+              <MetalButton
+                variant="default"
+                onClick={handleUpload}
+                disabled={!selectedFile || uploadStatus === "uploading"}
+              >
+                Yükle
+              </MetalButton>
             </div>
-          ))}
-        </div>
-      </section>
+            {selectedFile && (
+              <p className="text-sm text-muted-foreground">
+                {selectedFile.name} —{" "}
+                {uploadStatus === "uploading"
+                  ? "yükleniyor..."
+                  : uploadStatus === "done"
+                    ? "tamamlandı"
+                    : "hazır"}
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-bold">Soru Sor</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+              <input
+                type="text"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleAsk();
+                }}
+                placeholder="Dokümanlarınla ilgili bir soru sor..."
+                className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm"
+              />
+              <MetalButton
+                variant="success"
+                onClick={handleAsk}
+                disabled={isAsking || !question.trim()}
+              >
+                Sor
+              </MetalButton>
+            </div>
+
+            {isAsking && (
+              <div className="flex justify-center py-4">
+                <AiLoader />
+              </div>
+            )}
+
+            <div className="flex flex-col gap-4">
+              {answers.map((item) => (
+                <div
+                  key={item.id}
+                  className="rounded-lg border border-border bg-card p-4"
+                >
+                  <p className="text-sm font-medium text-foreground">
+                    {item.question}
+                  </p>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {item.answer}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

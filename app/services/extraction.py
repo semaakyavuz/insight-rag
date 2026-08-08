@@ -6,7 +6,7 @@ from pypdf import PdfReader
 def extract_text(raw_bytes: bytes, filename: str) -> str:
     if filename.lower().endswith(".pdf"):
         return _extract_pdf_text(raw_bytes)
-    return raw_bytes.decode("utf-8", errors="ignore")
+    return raw_bytes.decode("utf-8", errors="ignore").replace("\x00", "")
 
 
 def _extract_pdf_text(raw_bytes: bytes) -> str:

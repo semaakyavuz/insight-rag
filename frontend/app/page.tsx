@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { FileText, X } from "lucide-react";
-import { AnimatedGradient } from "@/components/ui/animated-gradient";
+import { HeroParallax } from "@/components/ui/hero-parallax";
 import { Component as AiLoader } from "@/components/ui/ai-loader";
 import { MetalButton } from "@/components/ui/metal-button";
 import {
@@ -94,24 +94,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      <section className="relative flex h-[60vh] min-h-95 w-full items-center justify-center overflow-hidden sm:h-[70vh]">
-        <AnimatedGradient config={{ preset: "Aurora" }} />
-        <div className="relative z-10 flex flex-col items-center gap-3 px-6 text-center sm:gap-6">
-          <h1 className="font-heading text-4xl font-bold tracking-tight text-white sm:text-6xl">
-            InsightRAG
-          </h1>
-          <p className="max-w-md text-sm text-white/80 sm:text-lg">
-            Dokümanlarınla konuş, anında cevap al
-          </p>
-          <MetalButton
-            variant="primary"
-            onClick={scrollToUpload}
-            className="mt-2 h-9 px-4 text-xs sm:h-11 sm:px-6 sm:text-sm"
-          >
-            Başla
-          </MetalButton>
-        </div>
-      </section>
+      <HeroParallax onCtaClick={scrollToUpload} />
 
       <div
         id="upload"

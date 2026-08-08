@@ -17,15 +17,21 @@ def get_client() -> Groq:
     return Groq(api_key=GROQ_API_KEY)
 
 
-def generate_answer(question: str, context_chunks: list[str]) -> str:
+def generate_answer(
+    question: str,
+    context_chunks: list[str],
+    history: list[dict[str, str]] | None = None,
+) -> str:
     context = "\n\n---\n\n".join(context_chunks)
     user_prompt = f"Bağlam:\n{context}\n\nSoru: {question}"
 
+    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    if history:
+        messages.extend(history)
+    messages.append({"role": "user", "content": user_prompt})
+
     response = get_client().chat.completions.create(
         model=GROQ_MODEL_NAME,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": user_prompt},
-        ],
+        messages=messages,
     )
     return response.choices[0].message.content

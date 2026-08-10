@@ -19,6 +19,9 @@ class Document(Base):
     )
     filename: Mapped[str] = mapped_column(String, nullable=False)
     content_type: Mapped[str] = mapped_column(String, nullable=False)
+    content_hash: Mapped[str | None] = mapped_column(
+        String, nullable=True, index=True
+    )
     uploaded_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )

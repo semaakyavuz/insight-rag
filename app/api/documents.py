@@ -1,3 +1,4 @@
+import hashlib
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
@@ -25,6 +26,17 @@ async def upload_document(
         )
 
     raw_bytes = await file.read()
+    content_hash = hashlib.sha256(raw_bytes).hexdigest()
+
+    existing = (
+        db.query(Document).filter(Document.content_hash == content_hash).first()
+    )
+    if existing:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Bu doküman zaten yüklü ({existing.filename})",
+        )
+
     text = extract_text(raw_bytes, file.filename)
 
     if not text.strip():
@@ -35,6 +47,7 @@ async def upload_document(
     document = Document(
         filename=file.filename,
         content_type=file.content_type or "application/octet-stream",
+        content_hash=content_hash,
     )
     db.add(document)
     db.flush()

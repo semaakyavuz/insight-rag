@@ -11,7 +11,7 @@ EMBEDDING_MODEL_NAME = os.getenv(
 # Default kept under EMBEDDING_MODEL_NAME's 128-token max sequence length,
 # so chunks aren't silently truncated at embed time.
 CHUNK_SIZE_TOKENS = int(os.getenv("CHUNK_SIZE_TOKENS", "100"))
-CHUNK_OVERLAP_TOKENS = int(os.getenv("CHUNK_OVERLAP_TOKENS", "20"))
+CHUNK_OVERLAP_TOKENS = int(os.getenv("CHUNK_OVERLAP_TOKENS", "30"))
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 

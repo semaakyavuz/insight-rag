@@ -12,7 +12,7 @@ from app.services.llm import generate_answer
 
 router = APIRouter()
 
-TOP_K = 5
+TOP_K = 7
 HISTORY_PAIR_LIMIT = 3
 TITLE_MAX_LENGTH = 50
 

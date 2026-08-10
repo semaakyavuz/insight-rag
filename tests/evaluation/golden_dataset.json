@@ -1,0 +1,62 @@
+[
+  {
+    "question": "Bağlamdan bağımsız dilbilgisi kaç bileşenden oluşan bir yapıdır ve bu bileşenler nelerdir?",
+    "expected_keywords": ["dörtlü", "VN", "VT", "P", "S"]
+  },
+  {
+    "question": "Bağlamdan bağımsız dilbilgisinde VN ve VT ne anlama gelir?",
+    "expected_keywords": ["sözdizim değişkenleri", "uç simgeler"]
+  },
+  {
+    "question": "Bir türetme ağacının kök düğümünün etiketi nedir?",
+    "expected_keywords": ["S", "kök"]
+  },
+  {
+    "question": "Türetme ağacında yaprak düğümlerin etiketleri ne olabilir?",
+    "expected_keywords": ["uç simge", "sözdizim değişkeni"]
+  },
+  {
+    "question": "Soldan türetme (leftmost derivation) nasıl tanımlanır?",
+    "expected_keywords": ["en soldaki", "değişken", "soldan türetme"]
+  },
+  {
+    "question": "Sağdan türetme (rightmost derivation) nasıl tanımlanır?",
+    "expected_keywords": ["en sağdaki", "değişken", "sağdan türetme"]
+  },
+  {
+    "question": "Belirgin (unambiguous) bir dil ne demektir?",
+    "expected_keywords": ["belirgin", "türetme ağacı"]
+  },
+  {
+    "question": "Dilbilgisinin yalınlaştırılması ne anlama gelir?",
+    "expected_keywords": ["daha az", "değişken", "kural"]
+  },
+  {
+    "question": "Yararsız değişken (useless variable) hangi durumda ortaya çıkar?",
+    "expected_keywords": ["yararsız", "değişken", "tümce"]
+  },
+  {
+    "question": "Bir değişkenin yararlı sayılması için hangi iki koşulu sağlaması gerekir?",
+    "expected_keywords": ["uç simge dizisi", "başlangıç değişkeninden"]
+  },
+  {
+    "question": "Algoritma 4.5 ne amaçla kullanılır?",
+    "expected_keywords": ["uç simge dizgisi", "değişkenler kümesi"]
+  },
+  {
+    "question": "Algoritma 4.6 hangi değişkenleri bulmak için kullanılır?",
+    "expected_keywords": ["başlangıç değişkeninden", "ulaşılabilen"]
+  },
+  {
+    "question": "Yararsız kural (useless rule) ne demektir?",
+    "expected_keywords": ["hiçbir tümcenin türetilmesinde", "kural"]
+  },
+  {
+    "question": "Örnek G4.1 dilbilgisinde uç simgeler (VT) kümesinde hangi semboller yer alır?",
+    "expected_keywords": ["+", "-", "*", "/"]
+  },
+  {
+    "question": "Bağlamdan bağımsız dilbilgisi hangi alanlarda önem taşır?",
+    "expected_keywords": ["derleyici", "yorumlayıcı", "programlama dili"]
+  }
+]

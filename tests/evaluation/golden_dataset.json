@@ -13,7 +13,7 @@
   },
   {
     "question": "Türetme ağacında yaprak düğümlerin etiketleri ne olabilir?",
-    "expected_keywords": ["uç simge", "sözdizim değişkeni"]
+    "expected_keywords": [["uç simge", "terminal simge", "terminal sembol"], "sözdizim değişkeni"]
   },
   {
     "question": "Soldan türetme (leftmost derivation) nasıl tanımlanır?",
@@ -41,7 +41,7 @@
   },
   {
     "question": "Algoritma 4.5 ne amaçla kullanılır?",
-    "expected_keywords": ["uç simge dizgisi", "değişkenler kümesi"]
+    "expected_keywords": [["uç simge dizgisi", "üretken değişken", "productive"], "değişkenler kümesi"]
   },
   {
     "question": "Algoritma 4.6 hangi değişkenleri bulmak için kullanılır?",

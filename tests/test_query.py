@@ -1,4 +1,5 @@
 import io
+import uuid
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
@@ -12,9 +13,10 @@ client = TestClient(app)
 
 def _upload_sample_document():
     content = (
-        b"insight-rag, dokumanlari parcalayip pgvector ile saklayan bir "
-        b"RAG servisidir. Sorular bu parcalar uzerinden cevaplanir."
-    )
+        "insight-rag, dokumanlari parcalayip pgvector ile saklayan bir "
+        "RAG servisidir. Sorular bu parcalar uzerinden cevaplanir. "
+        f"test-id:{uuid.uuid4().hex}"
+    ).encode()
     response = client.post(
         "/documents",
         files={"file": ("query_test.txt", io.BytesIO(content), "text/plain")},

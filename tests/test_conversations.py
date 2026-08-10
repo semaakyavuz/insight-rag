@@ -1,4 +1,5 @@
 import io
+import uuid
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
@@ -11,7 +12,10 @@ client = TestClient(app)
 
 
 def _upload_sample_document():
-    content = b"Konusma gecmisi testleri icin ornek bir belge."
+    content = (
+        f"Konusma gecmisi testleri icin ornek bir belge. "
+        f"test-id:{uuid.uuid4().hex}"
+    ).encode()
     response = client.post(
         "/documents",
         files={
@@ -57,17 +61,23 @@ def test_list_conversations_returns_lightweight_summary():
 
 
 def test_list_conversations_orders_newest_first():
-    id_a, doc_a = _create_conversation("ilk soru?")
-    id_b, doc_b = _create_conversation("ikinci soru?")
+    id_a = doc_a = id_b = doc_b = None
     try:
+        id_a, doc_a = _create_conversation("ilk soru?")
+        id_b, doc_b = _create_conversation("ikinci soru?")
+
         response = client.get("/conversations")
         ids = [c["id"] for c in response.json()]
         assert ids.index(id_b) < ids.index(id_a)
     finally:
-        client.delete(f"/conversations/{id_a}")
-        client.delete(f"/conversations/{id_b}")
-        _delete_document(doc_a)
-        _delete_document(doc_b)
+        if id_a:
+            client.delete(f"/conversations/{id_a}")
+        if id_b:
+            client.delete(f"/conversations/{id_b}")
+        if doc_a:
+            _delete_document(doc_a)
+        if doc_b:
+            _delete_document(doc_b)
 
 
 def test_get_conversation_returns_ordered_messages():

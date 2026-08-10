@@ -1,5 +1,7 @@
 # insight-rag
 
+![CI](https://github.com/semaakyavuz/insight-rag/actions/workflows/ci.yml/badge.svg)
+
 FastAPI tabanlı bir Retrieval-Augmented Generation (RAG) servisi.
 
 ## Kurulum
